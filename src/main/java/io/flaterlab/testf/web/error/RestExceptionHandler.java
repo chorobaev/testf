@@ -1,4 +1,4 @@
-package io.flaterlab.testf.web.exceptions;
+package io.flaterlab.testf.web.error;
 
 import io.flaterlab.testf.security.jwt.InvalidJwtAuthenticationException;
 import io.flaterlab.testf.utils.Json;
@@ -15,7 +15,7 @@ import static org.springframework.http.ResponseEntity.status;
 
 @RestControllerAdvice
 @Slf4j
-public class RestExceptionHandler {
+public final class RestExceptionHandler {
 
     @ExceptionHandler(value = {TestNotFoundException.class})
     public ResponseEntity testNotFound(TestNotFoundException exception, WebRequest request) {
@@ -23,10 +23,9 @@ public class RestExceptionHandler {
         return notFound().build();
     }
 
-    @ExceptionHandler(value = {InvalidJwtAuthenticationException.class})
-    public ResponseEntity invalidJwtAuthentication(InvalidJwtAuthenticationException ex, WebRequest request) {
-        System.out.println("handling InvalidJwtAuthenticationException...");
-        return status(HttpStatus.UNAUTHORIZED).body(Json.builder().put("message", "You are not authorized").build());
+    @ExceptionHandler(value = {UserAlreadyExistException.class})
+    public ResponseEntity userAlreadyExists(UserAlreadyExistException ex, WebRequest request) {
+        return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).build());
     }
 
     @ExceptionHandler(value = {BadCredentialsException.class})

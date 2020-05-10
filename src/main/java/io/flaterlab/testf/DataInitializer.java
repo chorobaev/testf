@@ -1,9 +1,7 @@
 package io.flaterlab.testf;
 
-import io.flaterlab.testf.io.dao.TestRepository;
-import io.flaterlab.testf.io.dao.UserRepository;
-import io.flaterlab.testf.io.entity.Test;
-import io.flaterlab.testf.io.entity.User;
+import io.flaterlab.testf.persistence.dao.UserRepository;
+import io.flaterlab.testf.persistence.model.User;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -17,16 +15,13 @@ import java.util.Date;
 @Slf4j
 public class DataInitializer implements CommandLineRunner {
 
-    private TestRepository testRepository;
     private UserRepository userRepository;
     private PasswordEncoder passwordEncoder;
 
     public DataInitializer(
-        TestRepository testRepository,
         UserRepository userRepository,
         PasswordEncoder passwordEncoder
     ) {
-        this.testRepository = testRepository;
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
     }
@@ -38,7 +33,7 @@ public class DataInitializer implements CommandLineRunner {
             .username("user")
             .passwordHash(this.passwordEncoder.encode("password"))
             .registeredAt(new Date())
-            .roles(Collections.singletonList("ROLE_USER"))
+            .roles(Arrays.asList("ROLE_USER", "ROLE_HOST"))
             .build()
         );
         userRepository.save(User.builder()

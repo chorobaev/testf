@@ -1,6 +1,6 @@
 package io.flaterlab.testf.security;
 
-import io.flaterlab.testf.io.entity.User;
+import io.flaterlab.testf.persistence.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -8,10 +8,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 

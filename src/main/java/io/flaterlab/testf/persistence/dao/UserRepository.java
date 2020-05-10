@@ -1,6 +1,6 @@
-package io.flaterlab.testf.io.dao;
+package io.flaterlab.testf.persistence.dao;
 
-import io.flaterlab.testf.io.entity.User;
+import io.flaterlab.testf.persistence.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

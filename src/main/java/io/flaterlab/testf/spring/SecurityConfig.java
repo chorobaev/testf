@@ -1,4 +1,4 @@
-package io.flaterlab.testf.config;
+package io.flaterlab.testf.spring;
 
 import io.flaterlab.testf.security.jwt.JwtSecurityConfigurer;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
@@ -36,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .and()
             .authorizeRequests()
             .antMatchers(HttpMethod.POST, "/v1/auth/signin").permitAll()
+            .antMatchers(HttpMethod.POST, "/v1/auth/signup").permitAll()
             .antMatchers(HttpMethod.GET, "/tests/**").permitAll()
             .antMatchers(HttpMethod.DELETE, "/tests/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/v1/tests/**").permitAll()

@@ -1,4 +1,4 @@
-package io.flaterlab.testf.io.entity;
+package io.flaterlab.testf.persistence.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

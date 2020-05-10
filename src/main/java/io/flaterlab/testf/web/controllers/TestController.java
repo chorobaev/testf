@@ -1,8 +1,8 @@
 package io.flaterlab.testf.web.controllers;
 
-import io.flaterlab.testf.io.entity.Test;
-import io.flaterlab.testf.io.dao.TestRepository;
-import io.flaterlab.testf.web.exceptions.TestNotFoundException;
+import io.flaterlab.testf.persistence.model.Test;
+import io.flaterlab.testf.persistence.dao.TestRepository;
+import io.flaterlab.testf.web.error.TestNotFoundException;
 import io.flaterlab.testf.web.dto.request.TestRequestModel;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

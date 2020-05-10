@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthRequestModel {
+public class SignInDto {
 
     private static final long serialVersionUID = -6986746375915710855L;
     private String username;

@@ -1,7 +1,7 @@
 package io.flaterlab.testf.security;
 
-import io.flaterlab.testf.io.dao.UserRepository;
-import io.flaterlab.testf.io.entity.User;
+import io.flaterlab.testf.persistence.dao.UserRepository;
+import io.flaterlab.testf.persistence.model.User;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
