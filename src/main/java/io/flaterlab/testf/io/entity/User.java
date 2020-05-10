@@ -12,6 +12,7 @@ import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 
 import static java.util.stream.Collectors.toList;
@@ -22,54 +23,42 @@ import static java.util.stream.Collectors.toList;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class User implements UserDetails {
+public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 
-    @NotEmpty
-    @Column(unique = true)
+    @Column(nullable = false, length = 50)
+    private String firstName;
+
+    @Column(length = 50)
+    private String middleName;
+
+    @Column(length = 50)
+    private String lastName;
+
+    @Column(length = 15)
+    private String mobile;
+
+    @Column(unique = true, nullable = false, length = 50)
     private String username;
 
-    @NotEmpty
-    private String password;
+    @Column(nullable = false)
+    private String passwordHash;
+
+    @Column(nullable = false)
+    @Temporal(TemporalType.DATE)
+    private Date registeredAt;
+
+    @Temporal(TemporalType.DATE)
+    private Date lastSignin;
+
+    private String info;
+
+    @Column(length = 100)
+    private String profile;
 
     @ElementCollection(fetch = FetchType.EAGER)
     @Builder.Default
     private List<String> roles = new ArrayList<>();
-
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream().map(SimpleGrantedAuthority::new).collect(toList());
-    }
-
-    @Override
-    public String getPassword() {
-        return this.password;
-    }
-
-    @Override
-    public String getUsername() {
-        return this.username;
-    }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return true;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return true;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return true;
-    }
 }

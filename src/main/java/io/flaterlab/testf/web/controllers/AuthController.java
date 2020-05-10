@@ -1,8 +1,8 @@
 package io.flaterlab.testf.web.controllers;
 
-import io.flaterlab.testf.io.repositories.UserRepository;
+import io.flaterlab.testf.io.dao.UserRepository;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
-import io.flaterlab.testf.web.models.request.AuthRequestModel;
+import io.flaterlab.testf.web.dto.request.AuthRequestModel;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;

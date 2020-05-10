@@ -1,6 +1,7 @@
 package io.flaterlab.testf.security;
 
-import io.flaterlab.testf.io.repositories.UserRepository;
+import io.flaterlab.testf.io.dao.UserRepository;
+import io.flaterlab.testf.io.entity.User;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -18,7 +19,9 @@ public class CustomUserDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        return this.users.findByUsername(username)
+        User user = users.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
+
+        return new FUserDetails(user);
     }
 }

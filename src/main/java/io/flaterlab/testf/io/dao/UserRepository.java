@@ -1,4 +1,4 @@
-package io.flaterlab.testf.io.repositories;
+package io.flaterlab.testf.io.dao;
 
 import io.flaterlab.testf.io.entity.User;
 import org.springframework.data.jpa.repository.JpaRepository;

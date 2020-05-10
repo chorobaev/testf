@@ -1,4 +1,4 @@
-package io.flaterlab.testf.web.models.request;
+package io.flaterlab.testf.web.dto.request;
 
 import lombok.Data;
 
