@@ -1,11 +1,12 @@
 package io.flaterlab.testf.service;
 
+import io.flaterlab.testf.persistence.dao.RoleRepository;
 import io.flaterlab.testf.persistence.dao.UserRepository;
+import io.flaterlab.testf.persistence.model.Role;
 import io.flaterlab.testf.persistence.model.User;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
-import io.flaterlab.testf.utils.Json;
 import io.flaterlab.testf.web.dto.request.SignInDto;
-import io.flaterlab.testf.web.dto.request.SignUpDto;
+import io.flaterlab.testf.web.dto.request.UserDto;
 import io.flaterlab.testf.web.error.UserAlreadyExistException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
@@ -17,10 +18,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import javax.management.relation.RoleNotFoundException;
+import java.util.*;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -30,17 +29,20 @@ public class UserService implements IUserService {
     private AuthenticationManager authenticationManager;
     private JwtTokenProvider jwtTokenProvider;
     private UserRepository userRepository;
+    private RoleRepository roleRepository;
     private PasswordEncoder passwordEncoder;
 
     public UserService(
         AuthenticationManager authenticationManager,
         JwtTokenProvider jwtTokenProvider,
         UserRepository userRepository,
+        RoleRepository roleRepository,
         PasswordEncoder passwordEncoder
     ) {
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -64,14 +66,14 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity signUp(SignUpDto accountDto) {
+    public ResponseEntity signUp(UserDto accountDto) {
         if (userRepository.findByUsername(accountDto.getUsername()).isPresent()) {
             throw new UserAlreadyExistException("Username " + accountDto.getUsername() + " already exists");
         }
 
         final User user = User.builder()
             .passwordHash(passwordEncoder.encode(accountDto.getPassword()))
-            .roles(Arrays.asList("ROLE_USER", "ROLE_HOST"))
+            .roles(Collections.singletonList(roleRepository.findByName("ROLE_HOST").orElseThrow(() -> new IllegalArgumentException(""))))
             .registeredAt(new Date())
             .build();
 

@@ -1,5 +1,7 @@
 package io.flaterlab.testf.security;
 
+import io.flaterlab.testf.persistence.model.Privilege;
+import io.flaterlab.testf.persistence.model.Role;
 import io.flaterlab.testf.persistence.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -8,7 +10,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static java.util.stream.Collectors.toList;
 
@@ -21,7 +25,15 @@ public class FUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return user.getRoles().stream().map(SimpleGrantedAuthority::new).collect(toList());
+        return getGrantedAuthorities(Role.getPrivileges(user.getRoles()));
+    }
+
+    private List<GrantedAuthority> getGrantedAuthorities(final List<String> privileges) {
+        final List<GrantedAuthority> authorities = new ArrayList<>();
+        for (final String privilege : privileges) {
+            authorities.add(new SimpleGrantedAuthority(privilege));
+        }
+        return authorities;
     }
 
     @Override

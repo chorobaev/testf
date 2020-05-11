@@ -11,15 +11,16 @@ import org.springframework.stereotype.Component;
 @Component
 @Qualifier("customUserDetailsService")
 public class CustomUserDetailsService implements UserDetailsService {
-    private UserRepository users;
 
-    public CustomUserDetailsService(UserRepository users) {
-        this.users = users;
+    private UserRepository userRepository;
+
+    public CustomUserDetailsService(UserRepository userRepository) {
+        this.userRepository = userRepository;
     }
 
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-        User user = users.findByUsername(username)
+        User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UsernameNotFoundException("Username: " + username + " not found"));
 
         return new FUserDetails(user);
