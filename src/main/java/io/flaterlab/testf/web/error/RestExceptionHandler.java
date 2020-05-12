@@ -13,12 +13,10 @@ import static org.springframework.http.ResponseEntity.notFound;
 import static org.springframework.http.ResponseEntity.status;
 
 @RestControllerAdvice
-@Slf4j
 public final class RestExceptionHandler {
 
     @ExceptionHandler(value = {TestNotFoundException.class})
     public ResponseEntity testNotFound(TestNotFoundException exception, WebRequest request) {
-        log.debug("handling TestNotFoundException...");
         return notFound().build();
     }
 
@@ -29,7 +27,6 @@ public final class RestExceptionHandler {
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity badCredentials(BadCredentialsException ex, WebRequest request) {
-        System.out.println("handling BadCredentialsException...");
         return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).buildMap());
     }
 }

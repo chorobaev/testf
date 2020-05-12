@@ -5,8 +5,8 @@ import io.flaterlab.testf.persistence.dao.UserRepository;
 import io.flaterlab.testf.persistence.model.User;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
 import io.flaterlab.testf.utils.Json;
-import io.flaterlab.testf.web.dto.request.SignInDto;
 import io.flaterlab.testf.web.dto.request.AccountDto;
+import io.flaterlab.testf.web.dto.request.SignInDto;
 import io.flaterlab.testf.web.error.UserAlreadyExistException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +19,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.Date;
 
 import static org.springframework.http.ResponseEntity.ok;
 
@@ -63,7 +64,7 @@ public class UserService implements IUserService {
                 .buildMap()
             );
         } catch (AuthenticationException e) {
-            throw new BadCredentialsException("Invalid username/password supplied");
+            throw new BadCredentialsException(e.getMessage());
         }
     }
 
@@ -81,10 +82,7 @@ public class UserService implements IUserService {
             .build();
 
         BeanUtils.copyProperties(accountDto, user);
-        System.out.println("User: " + user.getUsername() + "; Pass: " + user.getPasswordHash());
-        User rd = userRepository.save(user);
-
-        System.out.println("User r: " + rd.getUsername() + "; Pass r: " + rd.getPasswordHash());
+        userRepository.save(user);
 
         return signIn(SignInDto.builder()
             .username(accountDto.getUsername())
@@ -94,7 +92,6 @@ public class UserService implements IUserService {
 
     @Override
     public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() ->
-            new UsernameNotFoundException(""));
+        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(""));
     }
 }
