@@ -13,7 +13,8 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UserDto {
+public class AccountDto {
+
     private static final long serialVersionUID = -6986746375915710855L;
 
     @ValidUsername

@@ -14,8 +14,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
-import static java.util.stream.Collectors.toList;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
@@ -25,7 +23,20 @@ public class FUserDetails implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getGrantedAuthorities(Role.getPrivileges(user.getRoles()));
+        return getGrantedAuthorities(getPrivileges(user.getRoles()));
+    }
+
+    public static List<String> getPrivileges(final Collection<Role> roles) {
+        final List<String> privileges = new ArrayList<>();
+        final List<Privilege> collection = new ArrayList<>();
+        for (final Role role : roles) {
+            collection.addAll(role.getPrivileges());
+        }
+        for (final Privilege item : collection) {
+            privileges.add(item.getName());
+        }
+
+        return privileges;
     }
 
     private List<GrantedAuthority> getGrantedAuthorities(final List<String> privileges) {
@@ -63,6 +74,6 @@ public class FUserDetails implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return user.isEnabled();
     }
 }

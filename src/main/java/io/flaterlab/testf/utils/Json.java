@@ -2,8 +2,11 @@ package io.flaterlab.testf.utils;
 
 import net.minidev.json.JSONObject;
 
+import java.util.HashMap;
+import java.util.Map;
+
 public class Json {
-    private JSONObject jsonObject = new JSONObject();
+    private Map<String, Object> model = new HashMap<>();
 
     public static Json builder() {
         return new Json();
@@ -13,11 +16,16 @@ public class Json {
     }
 
     public Json put(String key, Object value) {
-        jsonObject.put(key, value);
+        model.put(key, value);
         return this;
     }
 
-    public String build() {
-        return jsonObject.toJSONString();
+    public Map<String, Object> buildMap() {
+        return model;
     }
+
+    public String buildJson() {
+        return JSONObject.toJSONString(model);
+    }
+
 }

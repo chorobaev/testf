@@ -1,7 +1,6 @@
 package io.flaterlab.testf.spring;
 
-import io.flaterlab.testf.security.jwt.JwtSecurityConfigurer;
-import io.flaterlab.testf.security.jwt.JwtTokenProvider;
+import io.flaterlab.testf.security.jwt.JwtTokenAuthenticationFilter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -11,15 +10,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.web.AuthenticationEntryPoint;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.filter.GenericFilterBean;
 
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private JwtTokenProvider jwtTokenProvider;
+    private AuthenticationEntryPoint authenticationEntryPoint;
+    private GenericFilterBean authenticationFilter;
 
-    public SecurityConfig(JwtTokenProvider jwtTokenProvider) {
-        this.jwtTokenProvider = jwtTokenProvider;
+    public SecurityConfig(
+        AuthenticationEntryPoint authenticationEntryPoint,
+        JwtTokenAuthenticationFilter authenticationFilter
+    ) {
+        this.authenticationEntryPoint = authenticationEntryPoint;
+        this.authenticationFilter = authenticationFilter;
     }
 
     @Bean
@@ -36,6 +43,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
+            .exceptionHandling()
+            .authenticationEntryPoint(authenticationEntryPoint)
+            .and()
+            .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic().disable()
             .csrf().disable()
             .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
@@ -46,13 +57,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
             .antMatchers(HttpMethod.GET, "/tests/**").permitAll()
             .antMatchers(HttpMethod.DELETE, "/tests/**").hasRole("ADMIN")
             .antMatchers(HttpMethod.GET, "/v1/tests/**").permitAll()
-            .anyRequest().authenticated()
-            .and()
-            .apply(securityConfigurer());
-    }
-
-    @Bean
-    public JwtSecurityConfigurer securityConfigurer() {
-        return new JwtSecurityConfigurer(jwtTokenProvider);
+            .anyRequest().authenticated();
     }
 }

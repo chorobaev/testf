@@ -10,7 +10,7 @@ class JsonTest {
     @Test
     void jsonBuilding_isCorrect() {
         String expected = "{\"username\":\"user\"}";
-        String actual = Json.builder().put("username", "user").build();
+        String actual = Json.builder().put("username", "user").buildMap();
         assertEquals(expected, actual);
     }
 }

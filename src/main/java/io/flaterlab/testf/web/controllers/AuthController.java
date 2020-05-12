@@ -2,7 +2,7 @@ package io.flaterlab.testf.web.controllers;
 
 import io.flaterlab.testf.service.IUserService;
 import io.flaterlab.testf.web.dto.request.SignInDto;
-import io.flaterlab.testf.web.dto.request.UserDto;
+import io.flaterlab.testf.web.dto.request.AccountDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -35,12 +35,12 @@ public class AuthController {
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity signupEncoded(final UserDto accountDto) {
+    public ResponseEntity signupEncoded(final AccountDto accountDto) {
         return userService.signUp(accountDto);
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity signupJson(@RequestBody final UserDto accountDto) {
+    public ResponseEntity signupJson(@RequestBody final AccountDto accountDto) {
         return userService.signUp(accountDto);
     }
 }

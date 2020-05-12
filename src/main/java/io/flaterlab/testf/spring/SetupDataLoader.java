@@ -44,19 +44,39 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         }
 
         // == create initial privileges
-        final Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
-        final Privilege writePrivilege = createPrivilegeIfNotFound("WRITE_PRIVILEGE");
         final Privilege passwordPrivilege = createPrivilegeIfNotFound("CHANGE_PASSWORD_PRIVILEGE");
+        final Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
+        final Privilege takeTestPrivilege = createPrivilegeIfNotFound("TAKE_PRIVILEGE");
+        final Privilege createTestPrivilege = createPrivilegeIfNotFound("CREATE_PRIVILEGE");
+        final Privilege manageAccountsPrivilege = createPrivilegeIfNotFound("MANAGE_ACCOUNTS_PRIVILEGE");
 
         // == create initial roles
-        final List<Privilege> adminPrivileges = new ArrayList<>(Arrays.asList(readPrivilege, writePrivilege, passwordPrivilege));
-        final List<Privilege> userPrivileges = new ArrayList<>(Arrays.asList(readPrivilege, passwordPrivilege));
+        final List<Privilege> adminPrivileges = new ArrayList<>(Arrays.asList(
+            passwordPrivilege,
+            readPrivilege,
+            takeTestPrivilege,
+            createTestPrivilege,
+            manageAccountsPrivilege)
+        );
+        final List<Privilege> userPrivileges = new ArrayList<>(Arrays.asList(
+            passwordPrivilege,
+            readPrivilege,
+            takeTestPrivilege
+        ));
+        final List<Privilege> hostPrivileges = new ArrayList<>(Arrays.asList(
+            passwordPrivilege,
+            readPrivilege,
+            takeTestPrivilege,
+            createTestPrivilege
+        ));
+
         final Role adminRole = createRoleIfNotFound("ROLE_ADMIN", adminPrivileges);
 
         createRoleIfNotFound("ROLE_USER", userPrivileges);
+        createRoleIfNotFound("ROLE_HOST", hostPrivileges);
 
         // == create initial user
-        createUserIfNotFound("user", "Test", "Test", "password",
+        createUserIfNotFound("admin", "Super", "Admin", "superPassword",
             new ArrayList<>(Collections.singletonList(adminRole)));
 
         alreadySetup = true;

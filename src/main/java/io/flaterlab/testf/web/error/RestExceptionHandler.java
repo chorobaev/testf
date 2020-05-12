@@ -1,6 +1,5 @@
 package io.flaterlab.testf.web.error;
 
-import io.flaterlab.testf.security.jwt.InvalidJwtAuthenticationException;
 import io.flaterlab.testf.utils.Json;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -25,12 +24,12 @@ public final class RestExceptionHandler {
 
     @ExceptionHandler(value = {UserAlreadyExistException.class})
     public ResponseEntity userAlreadyExists(UserAlreadyExistException ex, WebRequest request) {
-        return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).build());
+        return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).buildMap());
     }
 
     @ExceptionHandler(value = {BadCredentialsException.class})
     public ResponseEntity badCredentials(BadCredentialsException ex, WebRequest request) {
         System.out.println("handling BadCredentialsException...");
-        return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).build());
+        return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).buildMap());
     }
 }

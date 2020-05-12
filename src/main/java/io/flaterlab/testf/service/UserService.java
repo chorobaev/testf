@@ -2,23 +2,23 @@ package io.flaterlab.testf.service;
 
 import io.flaterlab.testf.persistence.dao.RoleRepository;
 import io.flaterlab.testf.persistence.dao.UserRepository;
-import io.flaterlab.testf.persistence.model.Role;
 import io.flaterlab.testf.persistence.model.User;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
+import io.flaterlab.testf.utils.Json;
 import io.flaterlab.testf.web.dto.request.SignInDto;
-import io.flaterlab.testf.web.dto.request.UserDto;
+import io.flaterlab.testf.web.dto.request.AccountDto;
 import io.flaterlab.testf.web.error.UserAlreadyExistException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.management.relation.RoleNotFoundException;
 import java.util.*;
 
 import static org.springframework.http.ResponseEntity.ok;
@@ -50,23 +50,25 @@ public class UserService implements IUserService {
     public ResponseEntity signIn(SignInDto body) {
         try {
             String username = body.getUsername();
-            authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(username, body.getPassword())
+            String password = body.getPassword();
+            System.out.println("Username: " + username + "; password: " + password);
+
+            Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
+            authenticationManager.authenticate(auth);
+            String token = jwtTokenProvider.createToken(username);
+
+            return ok(Json.builder()
+                .put("username", username)
+                .put("token", token)
+                .buildMap()
             );
-            String token = jwtTokenProvider.createToken(username, findUserByUsername(username).getRoles());
-
-            Map<Object, Object> model = new HashMap<>();
-            model.put("username", username);
-            model.put("token", token);
-            return ok(model);
-
         } catch (AuthenticationException e) {
             throw new BadCredentialsException("Invalid username/password supplied");
         }
     }
 
     @Override
-    public ResponseEntity signUp(UserDto accountDto) {
+    public ResponseEntity signUp(AccountDto accountDto) {
         if (userRepository.findByUsername(accountDto.getUsername()).isPresent()) {
             throw new UserAlreadyExistException("Username " + accountDto.getUsername() + " already exists");
         }
@@ -75,10 +77,14 @@ public class UserService implements IUserService {
             .passwordHash(passwordEncoder.encode(accountDto.getPassword()))
             .roles(Collections.singletonList(roleRepository.findByName("ROLE_HOST").orElseThrow(() -> new IllegalArgumentException(""))))
             .registeredAt(new Date())
+            .enabled(true)
             .build();
 
         BeanUtils.copyProperties(accountDto, user);
-        userRepository.save(user);
+        System.out.println("User: " + user.getUsername() + "; Pass: " + user.getPasswordHash());
+        User rd = userRepository.save(user);
+
+        System.out.println("User r: " + rd.getUsername() + "; Pass r: " + rd.getPasswordHash());
 
         return signIn(SignInDto.builder()
             .username(accountDto.getUsername())
