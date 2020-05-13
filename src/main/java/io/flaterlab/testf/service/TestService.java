@@ -26,17 +26,12 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public ResponseEntity getAllTests() {
-        return ResponseEntity.ok(retrieveTests(null));
+    public ResponseEntity getAllTests(int size) {
+        return ResponseEntity.ok(retrieveTests(size));
     }
 
-    @Override
-    public ResponseEntity getAllTests(TestsRequestDto body) {
-        return ResponseEntity.ok(retrieveTests(body));
-    }
-
-    private List<TestsResponseDto> retrieveTests(@Nullable TestsRequestDto body) {
-        int size = body == null ? 20 : body.getLen();
+    private List<TestsResponseDto> retrieveTests(int size) {
+        System.out.println("Len of tests: " + size);
 
         Pageable published = PageRequest.of(0, size, Sort.by("createdAt"));
         List<Test> publishedTests = testRepository.findAllByPublishedTrue(published);

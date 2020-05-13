@@ -6,7 +6,5 @@ import org.springframework.lang.Nullable;
 
 public interface ITestService {
 
-    ResponseEntity getAllTests();
-
-    ResponseEntity getAllTests(TestsRequestDto body);
+    ResponseEntity getAllTests(int size);
 }

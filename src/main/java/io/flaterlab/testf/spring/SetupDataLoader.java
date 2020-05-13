@@ -88,7 +88,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         User user = createUserIfNotFound("admin", "Super", "Admin", "superPassword",
             new ArrayList<>(Collections.singletonList(adminRole)));
 
-        createTestIfNotFound(user);
+        createTestIfNotFound("Sample test 1", user);
+        createTestIfNotFound("Sample test 2", user);
 
         alreadySetup = true;
     }
@@ -129,13 +130,12 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     }
 
     @Transactional
-    public Test createTestIfNotFound(User user) {
-        String title = "Sample test";
+    public Test createTestIfNotFound(String title, User host) {
         Date now = new Date();
         return testRepository.findTestByTitle(title).orElseGet(() ->
             testRepository.save(Test.builder()
-                .user(user)
-                .title("Sample test")
+                .user(host)
+                .title(title)
                 .slug(null)
                 .summary("Lorem ipsum")
                 .type("TEST")
