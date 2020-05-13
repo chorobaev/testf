@@ -10,7 +10,6 @@ import java.util.Collection;
 import java.util.Date;
 
 @Entity
-@Table(name = "user_account")
 @Data
 @Builder
 @NoArgsConstructor
@@ -39,7 +38,8 @@ public class User {
     @Column(nullable = false)
     private String passwordHash;
 
-    private boolean enabled;
+    @Column(nullable = false)
+    private boolean enabled = true;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)
@@ -50,7 +50,6 @@ public class User {
 
     private String info;
 
-    @Column(length = 100)
     private String profile;
 
     @ManyToMany(fetch = FetchType.EAGER)

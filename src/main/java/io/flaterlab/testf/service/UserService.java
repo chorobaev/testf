@@ -5,8 +5,8 @@ import io.flaterlab.testf.persistence.dao.UserRepository;
 import io.flaterlab.testf.persistence.model.User;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
 import io.flaterlab.testf.utils.Json;
-import io.flaterlab.testf.web.dto.request.AccountDto;
-import io.flaterlab.testf.web.dto.request.SignInDto;
+import io.flaterlab.testf.web.dto.request.SignUpRequestDto;
+import io.flaterlab.testf.web.dto.request.SignInRequestDto;
 import io.flaterlab.testf.web.error.UserAlreadyExistException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +48,7 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity signIn(SignInDto body) {
+    public ResponseEntity signIn(SignInRequestDto body) {
         try {
             String username = body.getUsername();
             String password = body.getPassword();
@@ -69,24 +69,24 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity signUp(AccountDto accountDto) {
-        if (userRepository.findByUsername(accountDto.getUsername()).isPresent()) {
-            throw new UserAlreadyExistException("Username " + accountDto.getUsername() + " already exists");
+    public ResponseEntity signUp(SignUpRequestDto signUpRequestDto) {
+        if (userRepository.findByUsername(signUpRequestDto.getUsername()).isPresent()) {
+            throw new UserAlreadyExistException("Username " + signUpRequestDto.getUsername() + " already exists");
         }
 
         final User user = User.builder()
-            .passwordHash(passwordEncoder.encode(accountDto.getPassword()))
+            .passwordHash(passwordEncoder.encode(signUpRequestDto.getPassword()))
             .roles(Collections.singletonList(roleRepository.findByName("ROLE_HOST").orElseThrow(() -> new IllegalArgumentException(""))))
             .registeredAt(new Date())
             .enabled(true)
             .build();
 
-        BeanUtils.copyProperties(accountDto, user);
+        BeanUtils.copyProperties(signUpRequestDto, user);
         userRepository.save(user);
 
-        return signIn(SignInDto.builder()
-            .username(accountDto.getUsername())
-            .password(accountDto.getPassword())
+        return signIn(SignInRequestDto.builder()
+            .username(signUpRequestDto.getUsername())
+            .password(signUpRequestDto.getPassword())
             .build());
     }
 

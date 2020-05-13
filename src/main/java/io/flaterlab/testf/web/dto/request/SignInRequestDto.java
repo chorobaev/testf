@@ -13,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SignInDto {
+public class SignInRequestDto {
 
     private static final long serialVersionUID = -6986746375915710855L;
 

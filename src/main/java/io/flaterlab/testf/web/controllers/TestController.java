@@ -1,64 +1,37 @@
 package io.flaterlab.testf.web.controllers;
 
-import io.flaterlab.testf.persistence.model.Test;
-import io.flaterlab.testf.persistence.dao.TestRepository;
-import io.flaterlab.testf.web.error.TestNotFoundException;
-import io.flaterlab.testf.web.dto.request.TestRequestModel;
+import io.flaterlab.testf.service.ITestService;
+import io.flaterlab.testf.web.dto.request.TestsRequestDto;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import javax.servlet.http.HttpServletRequest;
-
-import static org.springframework.http.ResponseEntity.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/v1/tests")
 public class TestController {
 
-    private TestRepository testRepository;
+    private ITestService testService;
 
-    public TestController(TestRepository testRepository) {
-        this.testRepository = testRepository;
+    public TestController(ITestService testService) {
+        this.testService = testService;
     }
 
-    @GetMapping("")
+    @GetMapping(value = "")
     public ResponseEntity all() {
-        return ok(testRepository.findAll());
+        return testService.getAllTests();
     }
 
-    @PostMapping("")
-    public ResponseEntity save(@RequestBody TestRequestModel model, HttpServletRequest request) {
-        Test saved = testRepository.save(Test.builder().name(model.getName()).build());
-
-        return created(
-            ServletUriComponentsBuilder
-                .fromContextPath(request)
-                .path("tests/{it}")
-                .buildAndExpand(saved.getId())
-                .toUri()
-        ).build();
+    @GetMapping(value = "", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public ResponseEntity allEncoded(TestsRequestDto body) {
+        return testService.getAllTests(body);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity get(@PathVariable("id") Long id) {
-        return ok(testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id)));
-    }
-
-    @PutMapping("/{id}")
-    public ResponseEntity update(@PathVariable("id") Long id, TestRequestModel model) {
-        Test existed = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        existed.setName(model.getName());
-
-        testRepository.save(existed);
-        return noContent().build();
-    }
-
-    @DeleteMapping("/{id}")
-    public ResponseEntity delete(@PathVariable("id") Long id) {
-        Test existed = testRepository.findById(id).orElseThrow(() -> new TestNotFoundException(id));
-        testRepository.delete(existed);
-        return noContent().build();
+    @GetMapping(value = "", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity allJson(@RequestBody TestsRequestDto body) {
+        return testService.getAllTests(body);
     }
 
 }

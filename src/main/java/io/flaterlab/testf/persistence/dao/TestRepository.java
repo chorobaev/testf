@@ -1,9 +1,16 @@
 package io.flaterlab.testf.persistence.dao;
 
 import io.flaterlab.testf.persistence.model.Test;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
-@RepositoryRestResource(path = "tests", collectionResourceRel = "tests", itemResourceRel = "test")
+import java.util.List;
+import java.util.Optional;
+
 public interface TestRepository extends JpaRepository<Test, Long> {
+
+    Optional<Test> findTestByTitle(String title);
+
+    List<Test> findAllByPublishedTrue(Pageable pageable);
+
 }

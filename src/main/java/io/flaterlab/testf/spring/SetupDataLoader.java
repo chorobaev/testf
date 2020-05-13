@@ -2,9 +2,11 @@ package io.flaterlab.testf.spring;
 
 import io.flaterlab.testf.persistence.dao.PrivilegeRepository;
 import io.flaterlab.testf.persistence.dao.RoleRepository;
+import io.flaterlab.testf.persistence.dao.TestRepository;
 import io.flaterlab.testf.persistence.dao.UserRepository;
 import io.flaterlab.testf.persistence.model.Privilege;
 import io.flaterlab.testf.persistence.model.Role;
+import io.flaterlab.testf.persistence.model.Test;
 import io.flaterlab.testf.persistence.model.User;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
@@ -12,7 +14,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.temporal.TemporalAmount;
+import java.time.temporal.TemporalUnit;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
@@ -22,17 +28,20 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PrivilegeRepository privilegeRepository;
+    private TestRepository testRepository;
     private PasswordEncoder passwordEncoder;
 
     public SetupDataLoader(
         UserRepository userRepository,
         RoleRepository roleRepository,
         PrivilegeRepository privilegeRepository,
+        TestRepository testRepository,
         PasswordEncoder passwordEncoder
     ) {
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.privilegeRepository = privilegeRepository;
+        this.testRepository = testRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -76,8 +85,10 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         createRoleIfNotFound("ROLE_HOST", hostPrivileges);
 
         // == create initial user
-        createUserIfNotFound("admin", "Super", "Admin", "superPassword",
+        User user = createUserIfNotFound("admin", "Super", "Admin", "superPassword",
             new ArrayList<>(Collections.singletonList(adminRole)));
+
+        createTestIfNotFound(user);
 
         alreadySetup = true;
     }
@@ -117,4 +128,25 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         return user;
     }
 
+    @Transactional
+    public Test createTestIfNotFound(User user) {
+        String title = "Sample test";
+        Date now = new Date();
+        return testRepository.findTestByTitle(title).orElseGet(() ->
+            testRepository.save(Test.builder()
+                .user(user)
+                .title("Sample test")
+                .slug(null)
+                .summary("Lorem ipsum")
+                .type("TEST")
+                .score(100)
+                .published(true)
+                .createdAt(now)
+                .startsAt(now)
+                .endsAt(new Date(now.getTime() + 36000000))
+                .content(null)
+                .build()
+            )
+        );
+    }
 }

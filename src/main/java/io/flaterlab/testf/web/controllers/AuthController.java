@@ -1,8 +1,8 @@
 package io.flaterlab.testf.web.controllers;
 
 import io.flaterlab.testf.service.IUserService;
-import io.flaterlab.testf.web.dto.request.SignInDto;
-import io.flaterlab.testf.web.dto.request.AccountDto;
+import io.flaterlab.testf.web.dto.request.SignInRequestDto;
+import io.flaterlab.testf.web.dto.request.SignUpRequestDto;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,22 +25,22 @@ public class AuthController {
     }
 
     @PostMapping(value = "/signin", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity signinEncoded(final SignInDto body) {
+    public ResponseEntity signinEncoded(final SignInRequestDto body) {
         return userService.signIn(body);
     }
 
     @PostMapping(value = "/signin", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity signinJson(@RequestBody final SignInDto body) {
+    public ResponseEntity signinJson(@RequestBody final SignInRequestDto body) {
         return userService.signIn(body);
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public ResponseEntity signupEncoded(final AccountDto accountDto) {
-        return userService.signUp(accountDto);
+    public ResponseEntity signupEncoded(final SignUpRequestDto signUpRequestDto) {
+        return userService.signUp(signUpRequestDto);
     }
 
     @PostMapping(value = "/signup", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity signupJson(@RequestBody final AccountDto accountDto) {
-        return userService.signUp(accountDto);
+    public ResponseEntity signupJson(@RequestBody final SignUpRequestDto signUpRequestDto) {
+        return userService.signUp(signUpRequestDto);
     }
 }
