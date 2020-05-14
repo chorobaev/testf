@@ -10,10 +10,6 @@ public class UsernameValidator implements ConstraintValidator<ValidUsername, Str
     private static final String USERNAME_PATTERN = "^[_A-Za-z0-9-+]+$";
 
     @Override
-    public void initialize(ValidUsername constraintAnnotation) {
-    }
-
-    @Override
     public boolean isValid(String username, ConstraintValidatorContext context) {
         return (validateUsername(username));
     }

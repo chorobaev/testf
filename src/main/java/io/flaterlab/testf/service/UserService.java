@@ -70,12 +70,13 @@ public class UserService implements IUserService {
     @Override
     public ResponseEntity signUp(SignUpRequestDto signUpRequestDto) {
         if (userRepository.findByUsername(signUpRequestDto.getUsername()).isPresent()) {
-            throw new UserAlreadyExistException("Username " + signUpRequestDto.getUsername() + " already exists");
+            throw new UserAlreadyExistException("Username '" + signUpRequestDto.getUsername() + "' already exists");
         }
 
         final User user = User.builder()
             .passwordHash(passwordEncoder.encode(signUpRequestDto.getPassword()))
-            .roles(Collections.singletonList(roleRepository.findByName("ROLE_HOST").orElseThrow(() -> new IllegalArgumentException(""))))
+            // TODO: change ROLE_USER to ROLE_HOST in release
+            .roles(Collections.singletonList(roleRepository.findByName("ROLE_USER").orElseThrow(() -> new IllegalArgumentException(""))))
             .registeredAt(new Date())
             .enabled(true)
             .build();

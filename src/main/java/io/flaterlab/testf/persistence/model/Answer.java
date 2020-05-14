@@ -13,30 +13,21 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question {
+public class Answer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
-    private Test test;
-
-    @Column(length = 50, nullable = false)
-    private String type; // MULTIPLE_CHOSE || SINGLE_CHOSE
+    @JoinColumn(name = "question_id", referencedColumnName = "id", nullable = false)
+    private Question question;
 
     @Column(nullable = false)
     private Boolean active;
 
     @Column(nullable = false)
-    private Integer level;
-
-    @Column(nullable = false)
-    private Integer score;
-
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
     private Date createdAt;
 
     @Temporal(TemporalType.DATE)

@@ -29,4 +29,9 @@ public final class RestExceptionHandler {
     public ResponseEntity badCredentials(BadCredentialsException ex, WebRequest request) {
         return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).buildMap());
     }
+
+    @ExceptionHandler(value = {BadRequestException.class})
+    public ResponseEntity badRequest(BadCredentialsException ex, WebRequest request) {
+        return status(HttpStatus.BAD_REQUEST).body(Json.builder().put("error", ex.getMessage()).buildMap());
+    }
 }

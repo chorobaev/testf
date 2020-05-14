@@ -10,6 +10,7 @@ import java.util.Collection;
 import java.util.Date;
 
 @Entity
+@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"title", "user_id"}))
 @Data
 @Builder
 @AllArgsConstructor
@@ -40,7 +41,7 @@ public class Test {
     private int score;
 
     @Column(nullable = false)
-    private boolean published = true;
+    private Boolean published;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)

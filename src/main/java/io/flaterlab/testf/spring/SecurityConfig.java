@@ -60,7 +60,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers(HttpMethod.GET, "/v1/tests/{testId}/**")
                     .access("hasRole('CREATE_PRIVILEGE') and " +
                         "@userSecurity.hasAccessToEditTest(authentication, #testId)")
-                .antMatchers(HttpMethod.GET, "/v1/tests/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/tests").permitAll()
+                .antMatchers(HttpMethod.PUT, "/v1/tests/**").hasAuthority("CREATE_PRIVILEGE")
                 .anyRequest().authenticated();
     }
 }
