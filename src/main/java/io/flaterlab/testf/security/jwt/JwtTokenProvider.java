@@ -31,8 +31,6 @@ public class JwtTokenProvider {
 
     @PostConstruct
     protected void init() {
-        System.out.println("Secret key: " + secretKey);
-        System.out.println("Length: " + validityInMilliseconds);
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
     }
 

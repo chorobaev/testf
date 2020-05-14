@@ -11,6 +11,8 @@ public interface TestRepository extends JpaRepository<Test, Long> {
 
     Optional<Test> findTestByTitle(String title);
 
+    Optional<Test> findTestById(long id);
+
     List<Test> findAllByPublishedTrue(Pageable pageable);
 
 }

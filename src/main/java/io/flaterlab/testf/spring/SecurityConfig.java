@@ -40,23 +40,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return super.authenticationManagerBean();
     }
 
+    @SuppressWarnings("ELValidationInJSP")
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        //noinspection SpringElInspection
         http
             .exceptionHandling()
-            .authenticationEntryPoint(authenticationEntryPoint)
+                .authenticationEntryPoint(authenticationEntryPoint)
             .and()
             .addFilterBefore(authenticationFilter, UsernamePasswordAuthenticationFilter.class)
             .httpBasic().disable()
             .csrf().disable()
-            .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .sessionManagement()
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
-            .antMatchers(HttpMethod.POST, "/v1/auth/signin").permitAll()
-            .antMatchers(HttpMethod.POST, "/v1/auth/signup").permitAll()
-            .antMatchers(HttpMethod.GET, "/tests/**").permitAll()
-            .antMatchers(HttpMethod.DELETE, "/tests/**").hasRole("ADMIN")
-            .antMatchers(HttpMethod.GET, "/v1/tests/**").permitAll()
-            .anyRequest().authenticated();
+                .antMatchers(HttpMethod.POST, "/v1/auth/signin").permitAll()
+                .antMatchers(HttpMethod.POST, "/v1/auth/signup").permitAll()
+                .antMatchers(HttpMethod.GET, "/v1/tests/{testId}/**")
+                    .access("hasRole('CREATE_PRIVILEGE') and " +
+                        "@userSecurity.hasAccessToEditTest(authentication, #testId)")
+                .antMatchers(HttpMethod.GET, "/v1/tests/**").permitAll()
+                .anyRequest().authenticated();
     }
 }

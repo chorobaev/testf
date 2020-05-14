@@ -1,48 +1,41 @@
 package io.flaterlab.testf.spring;
 
-import io.flaterlab.testf.persistence.dao.PrivilegeRepository;
-import io.flaterlab.testf.persistence.dao.RoleRepository;
-import io.flaterlab.testf.persistence.dao.TestRepository;
-import io.flaterlab.testf.persistence.dao.UserRepository;
-import io.flaterlab.testf.persistence.model.Privilege;
-import io.flaterlab.testf.persistence.model.Role;
-import io.flaterlab.testf.persistence.model.Test;
-import io.flaterlab.testf.persistence.model.User;
+import io.flaterlab.testf.persistence.dao.*;
+import io.flaterlab.testf.persistence.model.*;
 import org.springframework.context.ApplicationListener;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDate;
-import java.time.temporal.TemporalAmount;
-import java.time.temporal.TemporalUnit;
 import java.util.*;
-import java.util.concurrent.TimeUnit;
 
 @Component
 public class SetupDataLoader implements ApplicationListener<ContextRefreshedEvent> {
 
     private boolean alreadySetup = false;
 
+    private PasswordEncoder passwordEncoder;
     private UserRepository userRepository;
     private RoleRepository roleRepository;
     private PrivilegeRepository privilegeRepository;
     private TestRepository testRepository;
-    private PasswordEncoder passwordEncoder;
+    private QuestionRepository questionRepository;
 
     public SetupDataLoader(
+        PasswordEncoder passwordEncoder,
         UserRepository userRepository,
         RoleRepository roleRepository,
         PrivilegeRepository privilegeRepository,
         TestRepository testRepository,
-        PasswordEncoder passwordEncoder
+        QuestionRepository questionRepository
     ) {
+        this.passwordEncoder = passwordEncoder;
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.privilegeRepository = privilegeRepository;
         this.testRepository = testRepository;
-        this.passwordEncoder = passwordEncoder;
+        this.questionRepository = questionRepository;
     }
 
     @Override
@@ -88,8 +81,13 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         User user = createUserIfNotFound("admin", "Super", "Admin", "superPassword",
             new ArrayList<>(Collections.singletonList(adminRole)));
 
-        createTestIfNotFound("Sample test 1", user);
-        createTestIfNotFound("Sample test 2", user);
+        // TODO: remove temporal data later
+        // == create sample tests
+        Test test1 = createTestIfNotFound("Sample test 1", user);
+        Test test2 = createTestIfNotFound("Sample test 2", user);
+
+        addQuestions(test2, 5);
+        addQuestions(test1, 10);
 
         alreadySetup = true;
     }
@@ -134,8 +132,8 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         Date now = new Date();
         return testRepository.findTestByTitle(title).orElseGet(() ->
             testRepository.save(Test.builder()
-                .user(host)
                 .title(title)
+                .user(host)
                 .slug(null)
                 .summary("Lorem ipsum")
                 .type("TEST")
@@ -146,6 +144,32 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
                 .endsAt(new Date(now.getTime() + 36000000))
                 .content(null)
                 .build()
+            )
+        );
+    }
+
+    @Transactional
+    public List<Question> addQuestions(Test test, int size) {
+        List<Question> questions = new ArrayList<>();
+        for (int i = 1; i <= size; i++) {
+            questions.add(createQuestionIfNotFound("Question " + i, test));
+        }
+        return questions;
+    }
+
+    @Transactional
+    public Question createQuestionIfNotFound(String content, Test test) {
+        return questionRepository.findQuestionByContent(content).orElseGet(() ->
+            questionRepository.save(
+                Question.builder()
+                    .test(test)
+                    .type("SINGLE_CHOSE")
+                    .active(true)
+                    .level(5)
+                    .score(1)
+                    .createdAt(new Date())
+                    .content(content)
+                    .build()
             )
         );
     }

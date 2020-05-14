@@ -52,7 +52,6 @@ public class UserService implements IUserService {
         try {
             String username = body.getUsername();
             String password = body.getPassword();
-            System.out.println("Username: " + username + "; password: " + password);
 
             Authentication auth = new UsernamePasswordAuthenticationToken(username, password);
             authenticationManager.authenticate(auth);
