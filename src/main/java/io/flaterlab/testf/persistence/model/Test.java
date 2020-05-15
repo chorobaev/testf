@@ -38,7 +38,7 @@ public class Test {
     private String type; // TEST || QUIZ
 
     @Column(nullable = false)
-    private int score;
+    private Integer score;
 
     @Column(nullable = false)
     private Boolean published;

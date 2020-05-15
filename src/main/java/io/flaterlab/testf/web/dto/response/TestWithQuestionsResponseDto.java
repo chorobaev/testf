@@ -14,16 +14,19 @@ import java.util.List;
 @AllArgsConstructor
 public class TestWithQuestionsResponseDto {
 
-    private long id;
-    private long hostId;
+    private Long id;
+    private Long hostId;
     private String title;
     private String slug;
     private String summary;
     private String type;
-    private int score;
+    private Integer score;
+    private Boolean published;
+    private Date createdAt;
+    private Date updatedAt;
+    private Date publishedAt;
     private Date startsAt;
     private Date endsAt;
     private String content;
-
     private List<QuestionResponseDto> questions;
 }

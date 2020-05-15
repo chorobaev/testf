@@ -11,9 +11,10 @@ import io.flaterlab.testf.utils.Json;
 import io.flaterlab.testf.web.dto.request.AnswerRequestDto;
 import io.flaterlab.testf.web.dto.request.QuestionRequestDto;
 import io.flaterlab.testf.web.dto.request.TestRequestDto;
+import io.flaterlab.testf.web.dto.response.AnswerResponseDto;
 import io.flaterlab.testf.web.dto.response.QuestionResponseDto;
-import io.flaterlab.testf.web.dto.response.TestWithQuestionsResponseDto;
 import io.flaterlab.testf.web.dto.response.TestResponseDto;
+import io.flaterlab.testf.web.dto.response.TestWithQuestionsResponseDto;
 import io.flaterlab.testf.web.error.BadRequestException;
 import io.flaterlab.testf.web.error.TestNotFoundException;
 import org.springframework.beans.BeanUtils;
@@ -47,67 +48,55 @@ public class TestService implements ITestService {
 
     @Override
     public ResponseEntity getAllTests(int size) {
-        return ResponseEntity.ok(retrieveTests(size));
-    }
-
-    private List<TestResponseDto> retrieveTests(int size) {
         Pageable published = PageRequest.of(0, size, Sort.by("createdAt"));
         List<Test> publishedTests = testRepository.findAllByPublishedTrue(published);
+        List<TestResponseDto> responseDto = publishedTests.stream().map(this::testToDto).collect(Collectors.toList());
 
-        return publishedTests.stream().map(this::testToDto).collect(Collectors.toList());
+        return ResponseEntity.ok(responseDto);
     }
 
     private TestResponseDto testToDto(Test test) {
-        return TestResponseDto.builder()
-            .id(test.getId())
-            .hostId(test.getUser().getId())
-            .title(test.getTitle())
-            .slug(test.getSlug())
-            .summary(test.getSummary())
-            .type(test.getType())
-            .score(test.getScore())
-            .startsAt(test.getStartsAt())
-            .endsAt(test.getEndsAt())
-            .content(test.getContent())
-            .build();
+        TestResponseDto responseDto = new TestResponseDto();
+        BeanUtils.copyProperties(test, responseDto);
+
+        return responseDto;
     }
 
     @Override
     public ResponseEntity getTestById(long testId) {
-        return ResponseEntity.ok(retrieveTestAndQuestionsById(testId));
-    }
+        Test test = testRepository.findTestById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        TestWithQuestionsResponseDto responseDto = new TestWithQuestionsResponseDto();
+        BeanUtils.copyProperties(test, responseDto);
+        responseDto.setHostId(test.getUser().getId());
 
-    private TestWithQuestionsResponseDto retrieveTestAndQuestionsById(long id) {
-        Test test = testRepository.findTestById(id).orElseThrow(() -> new TestNotFoundException(id));
         List<QuestionResponseDto> questionsDto = questionRepository.findAllByTest(test)
             .stream()
             .map(this::questionToDto)
             .collect(Collectors.toList());
+        responseDto.setQuestions(questionsDto);
 
-        return TestWithQuestionsResponseDto.builder()
-            .id(test.getId())
-            .hostId(test.getUser().getId())
-            .title(test.getTitle())
-            .slug(test.getSlug())
-            .summary(test.getSummary())
-            .type(test.getType())
-            .score(test.getScore())
-            .startsAt(test.getStartsAt())
-            .endsAt(test.getEndsAt())
-            .content(test.getContent())
-            .questions(questionsDto)
-            .build();
+        return ResponseEntity.ok(responseDto);
     }
 
     private QuestionResponseDto questionToDto(Question question) {
-        return QuestionResponseDto.builder()
-            .id(question.getId())
-            .testId(question.getTest().getId())
-            .type(question.getType())
-            .level(question.getLevel())
-            .score(question.getScore())
-            .content(question.getContent())
-            .build();
+        QuestionResponseDto responseDto = new QuestionResponseDto();
+        BeanUtils.copyProperties(question, responseDto);
+        responseDto.setTestId(question.getTest().getId());
+
+        List<AnswerResponseDto> answersDto = answerRepository.findAllByQuestion(question)
+            .stream()
+            .map(this::answerToDto)
+            .collect(Collectors.toList());
+        responseDto.setAnswers(answersDto);
+
+        return responseDto;
+    }
+
+    private AnswerResponseDto answerToDto(Answer answer) {
+        AnswerResponseDto responseDto = new AnswerResponseDto();
+        BeanUtils.copyProperties(answer, responseDto);
+
+        return responseDto;
     }
 
     @Override

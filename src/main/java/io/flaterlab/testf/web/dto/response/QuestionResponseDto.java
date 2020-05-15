@@ -5,16 +5,23 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.Date;
+import java.util.List;
+
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class QuestionResponseDto {
 
-    private long id;
-    private long testId;
+    private Long id;
+    private Long testId;
     private String type; // MULTIPLE_CHOSE || SINGLE_CHOSE
-    private int level;
-    private int score;
+    private Boolean active;
+    private Integer level;
+    private Integer score;
+    private Date createdAt;
+    private Date updatedAt;
     private String content;
+    private List<AnswerResponseDto> answers;
 }

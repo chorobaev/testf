@@ -11,16 +11,13 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class TestResponseDto {
+public class AnswerResponseDto {
 
     private Long id;
-    private Long hostId;
-    private String title;
-    private String slug;
-    private String summary;
-    private String type;
-    private Integer score;
-    private Date startsAt;
-    private Date endsAt;
+    private Long questionId;
+    private Boolean active;
+    private Boolean correct;
+    private Date createdAt;
+    private Date updatedAt;
     private String content;
 }

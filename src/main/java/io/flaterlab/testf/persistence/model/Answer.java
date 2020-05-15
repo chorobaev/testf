@@ -27,6 +27,9 @@ public class Answer {
     private Boolean active;
 
     @Column(nullable = false)
+    private Boolean correct;
+
+    @Column(nullable = false)
     @Temporal(TemporalType.DATE)
     private Date createdAt;
 
