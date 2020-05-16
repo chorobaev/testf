@@ -12,6 +12,10 @@ public class Json {
         return new Json();
     }
 
+    public static Map<String, Object> messageSuccess() {
+        return Json.builder().put("message", "Success").buildMap();
+    }
+
     private Json() {
     }
 

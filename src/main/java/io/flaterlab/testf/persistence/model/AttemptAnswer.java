@@ -13,40 +13,29 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Question {
+public class AttemptAnswer {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
-    private Test test;
+    @JoinColumn(name = "take_id", referencedColumnName = "id", nullable = false)
+    private Attempt attempt;
 
-    @Column(length = 50, nullable = false)
-    @Enumerated(EnumType.STRING)
-    private Type type;
+    @ManyToOne
+    @JoinColumn(name = "answer_id", referencedColumnName = "id", nullable = false)
+    private Answer answer;
 
     @Column(nullable = false)
     private Boolean active;
 
     @Column(nullable = false)
-    private Integer level;
-
-    @Column(nullable = false)
-    private Integer score;
-
     @Temporal(TemporalType.DATE)
-    @Column(nullable = false)
     private Date createdAt;
 
     @Temporal(TemporalType.DATE)
     private Date updatedAt;
 
-    @Column(nullable = false)
     private String content;
-
-    public enum Type {
-        MULTIPLE_CHOSE, SINGLE_CHOSE
-    }
 }

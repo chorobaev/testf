@@ -136,7 +136,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
                 .user(host)
                 .slug(null)
                 .summary("Lorem ipsum")
-                .type("TEST")
+                .type(Test.Type.TEST)
                 .score(100)
                 .published(true)
                 .createdAt(now)
@@ -163,7 +163,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
             questionRepository.save(
                 Question.builder()
                     .test(test)
-                    .type("SINGLE_CHOSE")
+                    .type(Question.Type.SINGLE_CHOSE)
                     .active(true)
                     .level(5)
                     .score(1)

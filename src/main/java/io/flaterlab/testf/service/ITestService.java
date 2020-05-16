@@ -8,9 +8,9 @@ import org.springframework.http.ResponseEntity;
 
 public interface ITestService {
 
-    ResponseEntity getAllTests(int size);
+    ResponseEntity getAllTests(Integer size);
 
-    ResponseEntity getTestById(long testId);
+    ResponseEntity getTestById(Long testId);
 
     ResponseEntity createNewTest(User host, TestRequestDto body);
 

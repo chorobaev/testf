@@ -1,5 +1,6 @@
 package io.flaterlab.testf.web.dto.request;
 
+import io.flaterlab.testf.persistence.model.Test;
 import io.flaterlab.testf.validation.ValidTestType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -23,7 +24,7 @@ public class TestRequestDto {
     @NotNull
     @NotEmpty
     @ValidTestType
-    private String type;
+    private Test.Type type;
 
     private String slug;
     private String summary;

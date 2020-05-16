@@ -1,5 +1,6 @@
 package io.flaterlab.testf.web.dto.request;
 
+import io.flaterlab.testf.persistence.model.Question;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -16,7 +17,7 @@ public class QuestionRequestDto {
 
     @NotNull
     @NotEmpty
-    private String type; // MULTIPLE_CHOSE || SINGLE_CHOSE
+    private Question.Type type;
 
     @NotNull
     @NotEmpty

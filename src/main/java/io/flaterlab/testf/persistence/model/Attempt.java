@@ -9,15 +9,13 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"title", "user_id"}))
 @Data
 @Builder
-@AllArgsConstructor
 @NoArgsConstructor
-public class Test {
+@AllArgsConstructor
+public class Attempt {
 
     @Id
-    @Column(unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
@@ -25,19 +23,14 @@ public class Test {
     @JoinColumn(name = "user_id", referencedColumnName = "id", nullable = false)
     private User user;
 
-    @Column(length = 75, nullable = false)
-    private String title;
-
-    @Column(length = 100)
-    private String slug;
-
-    private String summary;
-
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
-    private Type type;
+    @ManyToOne
+    @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
+    private Test test;
 
     @Column(nullable = false)
+    @Enumerated(EnumType.STRING)
+    private Status status;
+
     private Integer score;
 
     @Column(nullable = false)
@@ -51,17 +44,14 @@ public class Test {
     private Date updatedAt;
 
     @Temporal(TemporalType.DATE)
-    private Date publishedAt;
+    private Date startedAt;
 
     @Temporal(TemporalType.DATE)
-    private Date startsAt;
-
-    @Temporal(TemporalType.DATE)
-    private Date endsAt;
+    private Date finishedAt;
 
     private String content;
 
-    public enum Type {
-        TEST, QUIZ
+    public enum Status {
+        STARTED, FINISHED, PAUSED
     }
 }

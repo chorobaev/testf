@@ -6,23 +6,17 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
 import java.util.List;
 
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class QuestionResponseDto {
+public class AttemptQuestionResponseDto {
 
     private Long id;
-    private Long testId;
     private Question.Type type;
-    private Boolean active;
     private Integer level;
-    private Integer score;
-    private Date createdAt;
-    private Date updatedAt;
     private String content;
-    private List<AnswerResponseDto> answers;
+    private List<AttemptAnswerResponseDto> answers;
 }

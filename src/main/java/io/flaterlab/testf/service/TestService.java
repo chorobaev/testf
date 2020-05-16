@@ -50,7 +50,7 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public ResponseEntity getAllTests(int size) {
+    public ResponseEntity getAllTests(Integer size) {
         Pageable published = PageRequest.of(0, size, Sort.by("createdAt"));
         List<Test> publishedTests = testRepository.findAllByPublishedTrue(published);
         List<TestResponseDto> responseDto = publishedTests.stream().map(this::testToDto).collect(Collectors.toList());
@@ -66,7 +66,7 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public ResponseEntity getTestById(long testId) {
+    public ResponseEntity getTestById(Long testId) {
         Test test = testRepository.findTestById(testId).orElseThrow(() -> new TestNotFoundException(testId));
         TestWithQuestionsResponseDto responseDto = new TestWithQuestionsResponseDto();
         BeanUtils.copyProperties(test, responseDto);
@@ -127,7 +127,7 @@ public class TestService implements ITestService {
 
         testRepository.save(test);
 
-        return ResponseEntity.ok(Json.builder().put("message", "Success").buildMap());
+        return ResponseEntity.ok(Json.messageSuccess());
     }
 
     @Override
@@ -147,7 +147,7 @@ public class TestService implements ITestService {
 
         questionRepository.save(question);
 
-        return ResponseEntity.ok(Json.builder().put("message", "Success").buildMap());
+        return ResponseEntity.ok(Json.messageSuccess());
     }
 
     @Override
@@ -163,7 +163,7 @@ public class TestService implements ITestService {
 
         answerRepository.save(answer);
 
-        return ResponseEntity.ok(Json.builder().put("message", "Success").buildMap());
+        return ResponseEntity.ok(Json.messageSuccess());
     }
 
     @Override
@@ -173,7 +173,7 @@ public class TestService implements ITestService {
         test.setUpdatedAt(new Date());
         testRepository.save(test);
 
-        return ResponseEntity.ok(Json.builder().put("message", "Success").buildMap());
+        return ResponseEntity.ok(Json.messageSuccess());
     }
 
     @Override
@@ -184,7 +184,7 @@ public class TestService implements ITestService {
         Transfer.notNullProperties(body, question);
         questionRepository.save(question);
 
-        return ResponseEntity.ok(Json.builder().put("message", "Success").buildMap());
+        return ResponseEntity.ok(Json.messageSuccess());
     }
 
     @Override
@@ -195,6 +195,6 @@ public class TestService implements ITestService {
         Transfer.notNullProperties(body, answer);
         answerRepository.save(answer);
 
-        return ResponseEntity.ok(Json.builder().put("message", "Success").buildMap());
+        return ResponseEntity.ok(Json.messageSuccess());
     }
 }

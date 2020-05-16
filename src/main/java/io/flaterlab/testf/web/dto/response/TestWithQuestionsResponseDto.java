@@ -1,5 +1,6 @@
 package io.flaterlab.testf.web.dto.response;
 
+import io.flaterlab.testf.persistence.model.Test;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -19,7 +20,7 @@ public class TestWithQuestionsResponseDto {
     private String title;
     private String slug;
     private String summary;
-    private String type;
+    private Test.Type type;
     private Integer score;
     private Boolean published;
     private Date createdAt;
