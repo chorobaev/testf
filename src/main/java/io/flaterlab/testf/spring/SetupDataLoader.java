@@ -48,7 +48,7 @@ public class SetupDataLoader implements ApplicationListener<ContextRefreshedEven
         // == create initial privileges
         final Privilege passwordPrivilege = createPrivilegeIfNotFound("CHANGE_PASSWORD_PRIVILEGE");
         final Privilege readPrivilege = createPrivilegeIfNotFound("READ_PRIVILEGE");
-        final Privilege takeTestPrivilege = createPrivilegeIfNotFound("TAKE_PRIVILEGE");
+        final Privilege takeTestPrivilege = createPrivilegeIfNotFound("ATTEMPT_PRIVILEGE");
         final Privilege createTestPrivilege = createPrivilegeIfNotFound("CREATE_PRIVILEGE");
         final Privilege manageAccountsPrivilege = createPrivilegeIfNotFound("MANAGE_ACCOUNTS_PRIVILEGE");
 

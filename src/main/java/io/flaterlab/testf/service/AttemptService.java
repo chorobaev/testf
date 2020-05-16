@@ -2,10 +2,12 @@ package io.flaterlab.testf.service;
 
 import io.flaterlab.testf.persistence.dao.*;
 import io.flaterlab.testf.persistence.model.*;
-import io.flaterlab.testf.utils.Json;
 import io.flaterlab.testf.web.dto.response.AttemptAnswerResponseDto;
 import io.flaterlab.testf.web.dto.response.AttemptQuestionResponseDto;
 import io.flaterlab.testf.web.dto.response.AttemptResponseDto;
+import io.flaterlab.testf.web.dto.response.AttemptResultResponseDto;
+import io.flaterlab.testf.web.error.AnswerNotFoundException;
+import io.flaterlab.testf.web.error.BadRequestException;
 import io.flaterlab.testf.web.error.TestNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
@@ -41,7 +43,7 @@ public class AttemptService implements IAttemptService {
     @Override
     public ResponseEntity attemptTestById(User user, Long testId) {
         Test test = testRepository.findTestById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        Attempt attempt = saveAttempt(user, test);
+        Attempt attempt = saveAnswer(user, test);
 
         AttemptResponseDto responseDto = new AttemptResponseDto();
         BeanUtils.copyProperties(test, responseDto);
@@ -77,7 +79,7 @@ public class AttemptService implements IAttemptService {
         return responseDto;
     }
 
-    private Attempt saveAttempt(User user, Test test) {
+    private Attempt saveAnswer(User user, Test test) {
         Date now = new Date();
         Attempt attempt = Attempt.builder()
             .user(user)
@@ -94,6 +96,56 @@ public class AttemptService implements IAttemptService {
 
     @Override
     public ResponseEntity finishAttemptById(Long attemptId, List<Long> answerIds) {
-        return null;
+        Attempt attempt = attemptRepository.findAttemptById(attemptId).orElseThrow(() ->
+            new BadRequestException("Attempt with id '" + attemptId + "' doesn't exists"));
+
+        Object response = prepareAttemptResult(attempt, answerIds);
+
+        attempt.setStatus(Attempt.Status.FINISHED);
+        attempt.setFinishedAt(new Date());
+        attemptRepository.save(attempt);
+
+        return ResponseEntity.ok(response);
+    }
+
+    private AttemptResultResponseDto prepareAttemptResult(Attempt attempt, List<Long> answerIds) {
+        List<Question> questions = questionRepository.findAllByTest(attempt.getTest());
+
+        int totalScore = questions.stream()
+            .mapToInt(Question::getScore)
+            .sum();
+
+        List<Answer> correctAnswers = answerIds.stream()
+            .map(id -> answerRepository.findAnswerById(id).orElseThrow(() -> new AnswerNotFoundException(id)))
+            .filter(answer -> answer.getCorrect().equals(true))
+            .collect(Collectors.toList());
+
+        correctAnswers.forEach(answer -> saveAnswer(answer, attempt));
+
+        int earnedScore = correctAnswers.stream()
+            .mapToInt(answer -> answer.getQuestion().getScore())
+            .sum();
+
+        return AttemptResultResponseDto.builder()
+            .attemptId(attempt.getId())
+            .testId(attempt.getTest().getId())
+            .testTitle(attempt.getTest().getTitle())
+            .totalQuestions(questions.size())
+            .correctAnswers(correctAnswers.size())
+            .totalScore(totalScore)
+            .earnedScore(earnedScore)
+            .summary("")
+            .build();
+    }
+
+    private void saveAnswer(Answer answer, Attempt attempt) {
+        attemptAnswerRepository.save(
+            AttemptAnswer.builder()
+                .attempt(attempt)
+                .answer(answer)
+                .createdAt(new Date())
+                .active(true)
+                .build()
+        );
     }
 }
