@@ -5,7 +5,6 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 @Data
@@ -15,11 +14,9 @@ import javax.validation.constraints.NotNull;
 public class AnswerRequestDto {
 
     @NotNull
-    @NotEmpty
     private Boolean correct;
 
     @NotNull
-    @NotEmpty
     private String content;
 
     private Boolean active;

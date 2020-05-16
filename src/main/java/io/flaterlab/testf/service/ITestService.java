@@ -17,4 +17,10 @@ public interface ITestService {
     ResponseEntity addNewQuestion(Long testId, QuestionRequestDto body);
 
     ResponseEntity addNewAnswer(Long questionId, AnswerRequestDto body);
+
+    ResponseEntity updateTestById(Long testId, TestRequestDto body);
+
+    ResponseEntity updateQuestionById(Long questionId, QuestionRequestDto body);
+
+    ResponseEntity updateAnswerById(Long answerId, AnswerRequestDto body);
 }

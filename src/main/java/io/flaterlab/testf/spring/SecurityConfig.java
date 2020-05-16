@@ -55,13 +55,31 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
             .and()
             .authorizeRequests()
+                // Authentication
                 .antMatchers(HttpMethod.POST, "/v1/auth/signin").permitAll()
                 .antMatchers(HttpMethod.POST, "/v1/auth/signup").permitAll()
+
+                // Getting tests
+                .antMatchers(HttpMethod.GET, "/v1/tests").hasAuthority("READ_PRIVILEGE")
                 .antMatchers(HttpMethod.GET, "/v1/tests/{testId}/**")
-                    .access("hasRole('CREATE_PRIVILEGE') and " +
-                        "@userSecurity.hasAccessToEditTest(authentication, #testId)")
-                .antMatchers(HttpMethod.GET, "/v1/tests").permitAll()
-                .antMatchers(HttpMethod.PUT, "/v1/tests/**").hasAuthority("CREATE_PRIVILEGE")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToEditTest(authentication, #testId)")
+
+                // Creating tests
+                .antMatchers(HttpMethod.PUT, "/v1/tests").hasAuthority("CREATE_PRIVILEGE")
+                .antMatchers(HttpMethod.PUT, "/v1/tests/{testId}/questions")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToEditTest(authentication, #testId)")
+                .antMatchers(HttpMethod.PUT, "/v1/tests/questions/{questionId}/answers")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToEditQuestion(authentication, #questionId)")
+
+                // Updating tests
+                .antMatchers(HttpMethod.PUT, "/v1/tests/{testId}")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToEditTest(authentication, #testId)")
+                .antMatchers(HttpMethod.PUT, "/v1/tests/questions/{questionId}")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToEditQuestion(authentication, #questionId)")
+                .antMatchers(HttpMethod.PUT, "/v1/tests/questions/answers/{answerId}")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToEditAnswer(authentication, #answerId)")
+
+                // All others
                 .anyRequest().authenticated();
     }
 }

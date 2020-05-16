@@ -76,7 +76,7 @@ public class UserService implements IUserService {
         final User user = User.builder()
             .passwordHash(passwordEncoder.encode(signUpRequestDto.getPassword()))
             // TODO: change ROLE_USER to ROLE_HOST in release
-            .roles(Collections.singletonList(roleRepository.findByName("ROLE_USER").orElseThrow(() -> new IllegalArgumentException(""))))
+            .roles(Collections.singletonList(roleRepository.findByName("ROLE_HOST").orElseThrow(() -> new IllegalArgumentException(""))))
             .registeredAt(new Date())
             .enabled(true)
             .build();
