@@ -5,8 +5,9 @@ import io.flaterlab.testf.persistence.dao.UserRepository;
 import io.flaterlab.testf.persistence.model.User;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
 import io.flaterlab.testf.utils.Json;
-import io.flaterlab.testf.web.dto.request.SignUpRequestDto;
 import io.flaterlab.testf.web.dto.request.SignInRequestDto;
+import io.flaterlab.testf.web.dto.request.SignUpRequestDto;
+import io.flaterlab.testf.web.dto.response.ProfileResponseDto;
 import io.flaterlab.testf.web.error.UserAlreadyExistException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -91,7 +91,9 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public User findUserByUsername(String username) {
-        return userRepository.findByUsername(username).orElseThrow(() -> new UsernameNotFoundException(""));
+    public ResponseEntity getProfileInfo(User user) {
+        ProfileResponseDto responseDto = new ProfileResponseDto();
+        BeanUtils.copyProperties(user, responseDto);
+        return ok(responseDto);
     }
 }

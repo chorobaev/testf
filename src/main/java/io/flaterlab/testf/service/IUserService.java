@@ -11,5 +11,5 @@ public interface IUserService {
 
     ResponseEntity signUp(final SignUpRequestDto signUpRequestDto);
 
-    User findUserByUsername(final String username);
+    ResponseEntity getProfileInfo(User user);
 }
