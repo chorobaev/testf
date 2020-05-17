@@ -18,4 +18,6 @@ public interface TestRepository extends JpaRepository<Test, Long> {
 
     List<Test> findAllByPublishedTrue(Pageable pageable);
 
+    List<Test> findAllByUserAndPublishedTrue(User user, Pageable pageable);
+
 }

@@ -36,22 +36,22 @@ public class UserSecurity {
     public boolean hasAccessToTest(Authentication authentication, Long testId) {
         FUserDetails userDetails = (FUserDetails) authentication.getPrincipal();
         Optional<Test> test = testRepository.findTestById(testId);
-        return test.isPresent() && userDetails.getUser().getId().equals(test.get().getUser().getId());
+        return !test.isPresent() || userDetails.getUser().getId().equals(test.get().getUser().getId());
     }
 
     public boolean hasAccessToQuestion(Authentication authentication, Long questionId) {
         Optional<Question> question = questionRepository.findQuestionById(questionId);
-        return question.isPresent() && hasAccessToTest(authentication, question.get().getTest().getId());
+        return !question.isPresent() || hasAccessToTest(authentication, question.get().getTest().getId());
     }
 
     public boolean hasAccessToAnswer(Authentication authentication, Long answerId) {
         Optional<Answer> answer = answerRepository.findAnswerById(answerId);
-        return answer.isPresent() && hasAccessToQuestion(authentication, answer.get().getQuestion().getId());
+        return !answer.isPresent() || hasAccessToQuestion(authentication, answer.get().getQuestion().getId());
     }
 
     public boolean hasAccessToAttempt(Authentication authentication, Long attemptId) {
         FUserDetails userDetails = (FUserDetails) authentication.getPrincipal();
         Optional<Attempt> attempt = attemptRepository.findAttemptById(attemptId);
-        return attempt.isPresent() && userDetails.getUser().getId().equals(attempt.get().getUser().getId());
+        return !attempt.isPresent() || userDetails.getUser().getId().equals(attempt.get().getUser().getId());
     }
 }

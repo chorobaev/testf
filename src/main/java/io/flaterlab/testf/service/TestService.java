@@ -3,6 +3,7 @@ package io.flaterlab.testf.service;
 import io.flaterlab.testf.persistence.dao.AnswerRepository;
 import io.flaterlab.testf.persistence.dao.QuestionRepository;
 import io.flaterlab.testf.persistence.dao.TestRepository;
+import io.flaterlab.testf.persistence.dao.UserRepository;
 import io.flaterlab.testf.persistence.model.Answer;
 import io.flaterlab.testf.persistence.model.Question;
 import io.flaterlab.testf.persistence.model.Test;
@@ -25,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.Calendar;
@@ -35,15 +37,18 @@ import java.util.stream.Collectors;
 @Service
 public class TestService implements ITestService {
 
+    private UserRepository userRepository;
     private TestRepository testRepository;
     private QuestionRepository questionRepository;
     private AnswerRepository answerRepository;
 
     public TestService(
+        UserRepository userRepository,
         TestRepository testRepository,
         QuestionRepository questionRepository,
         AnswerRepository answerRepository
     ) {
+        this.userRepository = userRepository;
         this.testRepository = testRepository;
         this.questionRepository = questionRepository;
         this.answerRepository = answerRepository;
@@ -53,7 +58,9 @@ public class TestService implements ITestService {
     public ResponseEntity getAllTests(Integer size) {
         Pageable published = PageRequest.of(0, size, Sort.by("createdAt"));
         List<Test> publishedTests = testRepository.findAllByPublishedTrue(published);
-        List<TestResponseDto> responseDto = publishedTests.stream().map(this::testToDto).collect(Collectors.toList());
+        List<TestResponseDto> responseDto = publishedTests.stream()
+            .map(this::testToDto)
+            .collect(Collectors.toList());
 
         return ResponseEntity.ok(responseDto);
     }
@@ -63,6 +70,19 @@ public class TestService implements ITestService {
         BeanUtils.copyProperties(test, responseDto);
 
         return responseDto;
+    }
+
+    @Override
+    public ResponseEntity getAllTestsOfUser(Long userId, Integer size) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new BadRequestException("User not found"));
+
+        Pageable published = PageRequest.of(0, size, Sort.by("createdAt"));
+        List<Test> publishedTestsOfUser = testRepository.findAllByUserAndPublishedTrue(user, published);
+        List<TestResponseDto> responseDto = publishedTestsOfUser.stream()
+            .map(this::testToDto)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responseDto);
     }
 
     @Override

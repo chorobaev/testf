@@ -10,6 +10,8 @@ public interface ITestService {
 
     ResponseEntity getAllTests(Integer size);
 
+    ResponseEntity getAllTestsOfUser(Long userId, Integer size);
+
     ResponseEntity getTestById(Long testId);
 
     ResponseEntity createNewTest(User host, TestRequestDto body);
