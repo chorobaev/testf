@@ -11,8 +11,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Optional;
-import java.util.OptionalLong;
 
 @RestController
 @RequestMapping(value = "/v1/tests")
@@ -25,8 +23,7 @@ public class TestController {
     }
 
     @GetMapping(value = "")
-    public ResponseEntity getAllTests(@RequestParam(defaultValue = "20") int size,
-                                      @RequestParam(required = false) Long userId) {
+    public ResponseEntity getAllTests(@RequestParam(defaultValue = "20") int size, @RequestParam(required = false) Long userId) {
         return userId != null ? testService.getAllTestsOfUser(userId, size) : testService.getAllTests(size);
     }
 

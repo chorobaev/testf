@@ -10,6 +10,9 @@ import io.flaterlab.testf.web.error.AnswerNotFoundException;
 import io.flaterlab.testf.web.error.BadRequestException;
 import io.flaterlab.testf.web.error.TestNotFoundException;
 import org.springframework.beans.BeanUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -43,7 +46,7 @@ public class AttemptService implements IAttemptService {
     @Override
     public ResponseEntity attemptTestById(User user, Long testId) {
         Test test = testRepository.findTestById(testId).orElseThrow(() -> new TestNotFoundException(testId));
-        Attempt attempt = saveAnswer(user, test);
+        Attempt attempt = saveAttempt(user, test);
 
         AttemptResponseDto responseDto = new AttemptResponseDto();
         BeanUtils.copyProperties(test, responseDto);
@@ -79,13 +82,13 @@ public class AttemptService implements IAttemptService {
         return responseDto;
     }
 
-    private Attempt saveAnswer(User user, Test test) {
+    private Attempt saveAttempt(User user, Test test) {
         Date now = new Date();
         Attempt attempt = Attempt.builder()
             .user(user)
             .test(test)
             .status(Attempt.Status.STARTED)
-            .score(0)
+            .totalScore(0)
             .published(true)
             .createdAt(now)
             .startedAt(now)
@@ -99,10 +102,14 @@ public class AttemptService implements IAttemptService {
         Attempt attempt = attemptRepository.findAttemptById(attemptId).orElseThrow(() ->
             new BadRequestException("Attempt with id '" + attemptId + "' doesn't exists"));
 
-        Object response = prepareAttemptResult(attempt, answerIds);
+        AttemptResultResponseDto response = prepareAttemptResult(attempt, answerIds);
 
         attempt.setStatus(Attempt.Status.FINISHED);
         attempt.setFinishedAt(new Date());
+        attempt.setTotalQuestions(response.getTotalQuestions());
+        attempt.setCorrectAnswers(response.getCorrectAnswers());
+        attempt.setTotalScore(response.getTotalScore());
+        attempt.setEarnedScore(response.getEarnedScore());
         attemptRepository.save(attempt);
 
         return ResponseEntity.ok(response);
@@ -120,7 +127,7 @@ public class AttemptService implements IAttemptService {
             .filter(answer -> answer.getCorrect().equals(true))
             .collect(Collectors.toList());
 
-        correctAnswers.forEach(answer -> saveAnswer(answer, attempt));
+        correctAnswers.forEach(answer -> saveAttempt(answer, attempt));
 
         int earnedScore = correctAnswers.stream()
             .mapToInt(answer -> answer.getQuestion().getScore())
@@ -134,11 +141,11 @@ public class AttemptService implements IAttemptService {
             .correctAnswers(correctAnswers.size())
             .totalScore(totalScore)
             .earnedScore(earnedScore)
-            .summary("")
+            .content("")
             .build();
     }
 
-    private void saveAnswer(Answer answer, Attempt attempt) {
+    private void saveAttempt(Answer answer, Attempt attempt) {
         attemptAnswerRepository.save(
             AttemptAnswer.builder()
                 .attempt(attempt)
@@ -147,5 +154,25 @@ public class AttemptService implements IAttemptService {
                 .active(true)
                 .build()
         );
+    }
+
+    @Override
+    public ResponseEntity getAttemptHistory(User user, Integer size) {
+        Pageable latest = PageRequest.of(0, size, Sort.by("finishedAt"));
+        List<AttemptResultResponseDto> responseDto = attemptRepository.findAllByUser(user, latest).stream()
+            .map(this::attemptToDto)
+            .collect(Collectors.toList());
+
+        return ResponseEntity.ok(responseDto);
+    }
+
+    private AttemptResultResponseDto attemptToDto(Attempt attempt) {
+        AttemptResultResponseDto responseDto = new AttemptResultResponseDto();
+        BeanUtils.copyProperties(attempt, responseDto);
+        responseDto.setAttemptId(attempt.getId());
+        responseDto.setTestId(attempt.getTest().getId());
+        responseDto.setTestTitle(attempt.getTest().getTitle());
+
+        return responseDto;
     }
 }

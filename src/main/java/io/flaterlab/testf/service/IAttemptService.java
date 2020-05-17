@@ -11,4 +11,6 @@ public interface IAttemptService {
 
     ResponseEntity finishAttemptById(Long takeId, List<Long> answerIds);
 
+    ResponseEntity getAttemptHistory(User user, Integer size);
+
 }

@@ -31,7 +31,13 @@ public class Attempt {
     @Column(nullable = false, columnDefinition = "smallint")
     private Status status;
 
-    private Integer score;
+    private Integer totalQuestions;
+
+    private Integer correctAnswers;
+
+    private Integer totalScore;
+
+    private Integer earnedScore;
 
     @Column(nullable = false)
     private Boolean published;

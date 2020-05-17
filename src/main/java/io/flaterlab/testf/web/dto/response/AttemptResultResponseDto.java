@@ -18,5 +18,5 @@ public class AttemptResultResponseDto {
     private Integer correctAnswers;
     private Integer totalScore;
     private Integer earnedScore;
-    private String summary;
+    private String content;
 }

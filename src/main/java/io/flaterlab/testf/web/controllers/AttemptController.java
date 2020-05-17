@@ -29,4 +29,10 @@ public class AttemptController {
     public ResponseEntity finishAttempt(@PathVariable Long attemptId, @RequestBody List<Long> answerIds) {
         return attemptService.finishAttemptById(attemptId, answerIds);
     }
+
+    @GetMapping(value = "/history")
+    public ResponseEntity getAttempts(@RequestParam(defaultValue = "20") int size, Authentication auth) {
+        FUserDetails userDetails = (FUserDetails) auth.getPrincipal();
+        return attemptService.getAttemptHistory(userDetails.getUser(), size);
+    }
 }
