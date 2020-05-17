@@ -23,8 +23,8 @@ public class Question {
     @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
     private Test test;
 
-    @Column(length = 50, nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated
+    @Column(nullable = false, columnDefinition = "smallint")
     private Type type;
 
     @Column(nullable = false)

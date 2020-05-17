@@ -33,8 +33,8 @@ public class Test {
 
     private String summary;
 
-    @Enumerated(EnumType.STRING)
-    @Column(length = 10)
+    @Enumerated
+    @Column(nullable = false, columnDefinition = "smallint")
     private Type type;
 
     @Column(nullable = false)

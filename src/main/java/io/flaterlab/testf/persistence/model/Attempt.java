@@ -27,8 +27,8 @@ public class Attempt {
     @JoinColumn(name = "test_id", referencedColumnName = "id", nullable = false)
     private Test test;
 
-    @Column(nullable = false)
-    @Enumerated(EnumType.STRING)
+    @Enumerated
+    @Column(nullable = false, columnDefinition = "smallint")
     private Status status;
 
     private Integer score;
