@@ -7,6 +7,7 @@ import javax.persistence.*;
 import java.util.Collection;
 
 @Entity
+@Table(name = "roles")
 @Data
 @NoArgsConstructor
 public class Role {

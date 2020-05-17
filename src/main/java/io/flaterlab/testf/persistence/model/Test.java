@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(uniqueConstraints = @UniqueConstraint(columnNames = {"title", "user_id"}))
+@Table(name = "tests", uniqueConstraints = @UniqueConstraint(columnNames = {"title", "user_id"}))
 @Data
 @Builder
 @AllArgsConstructor
@@ -17,7 +17,6 @@ import java.util.Date;
 public class Test {
 
     @Id
-    @Column(unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 

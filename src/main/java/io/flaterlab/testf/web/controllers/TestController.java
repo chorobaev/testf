@@ -61,7 +61,8 @@ public class TestController {
     }
 
     @PutMapping(value = "/questions/{questionId}/answers", consumes = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity addAnswerJson(@PathVariable Long questionId, @Valid @RequestBody AnswerRequestDto body) { return testService.addNewAnswer(questionId, body);
+    public ResponseEntity addAnswerJson(@PathVariable Long questionId, @Valid @RequestBody AnswerRequestDto body) {
+        return testService.addNewAnswer(questionId, body);
     }
 
     @PutMapping(value = "{testId}", consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
@@ -89,8 +90,23 @@ public class TestController {
         return testService.updateAnswerById(answerId, body);
     }
 
-    @PutMapping(value = "/*/questions/answers/{answerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
+    @PutMapping(value = "/questions/answers/{answerId}", consumes = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity updateAnswerJson(@PathVariable Long answerId, @RequestBody AnswerRequestDto body) {
         return testService.updateAnswerById(answerId, body);
+    }
+
+    @DeleteMapping(value = "/{testId}")
+    public ResponseEntity deleteTest(@PathVariable Long testId) {
+        return testService.deleteTestById(testId);
+    }
+
+    @DeleteMapping(value = "/questions/{questionId}")
+    public ResponseEntity deleteQuestion(@PathVariable Long questionId) {
+        return testService.deleteQuestionById(questionId);
+    }
+
+    @DeleteMapping(value = "/questions/answers/{answerId}")
+    public ResponseEntity deleteAnswer(@PathVariable Long answerId) {
+        return testService.deleteAnswerById(answerId);
     }
 }

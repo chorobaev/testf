@@ -10,13 +10,14 @@ import java.util.Collection;
 import java.util.Date;
 
 @Entity
+@Table(name = "fUsers")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
+
     @Id
-    @Column(unique = true, nullable = false)
     @GeneratedValue(strategy = GenerationType.AUTO)
     Long id;
 

@@ -23,4 +23,10 @@ public interface ITestService {
     ResponseEntity updateQuestionById(Long questionId, QuestionRequestDto body);
 
     ResponseEntity updateAnswerById(Long answerId, AnswerRequestDto body);
+
+    ResponseEntity deleteTestById(Long testId);
+
+    ResponseEntity deleteQuestionById(Long questionId);
+
+    ResponseEntity deleteAnswerById(Long answerId);
 }

@@ -197,4 +197,33 @@ public class TestService implements ITestService {
 
         return ResponseEntity.ok(Json.messageSuccess());
     }
+
+    @Override
+    public ResponseEntity deleteTestById(Long testId) {
+        Test test = testRepository.findTestById(testId).orElseThrow(() -> new TestNotFoundException(testId));
+        questionRepository.findAllByTest(test).forEach(question -> deleteQuestionById(question.getId()));
+
+        testRepository.deleteById(testId);
+
+        return ResponseEntity.ok(Json.messageSuccess());
+    }
+
+    @Override
+    public ResponseEntity deleteQuestionById(Long questionId) {
+        Question question = questionRepository.findQuestionById(questionId).orElseThrow(() ->
+            new QuestionNotFoundException(questionId));
+        answerRepository.findAllByQuestion(question).forEach(answer -> deleteAnswerById(answer.getId()));
+
+        questionRepository.deleteById(questionId);
+
+        return ResponseEntity.ok(Json.messageSuccess());
+    }
+
+    @Override
+    public ResponseEntity deleteAnswerById(Long answerId) {
+        answerRepository.findAnswerById(answerId).orElseThrow(() -> new AnswerNotFoundException(answerId));
+        answerRepository.deleteById(answerId);
+
+        return ResponseEntity.ok(Json.messageSuccess());
+    }
 }
