@@ -12,7 +12,7 @@ import javax.sql.DataSource;
 @Configuration
 public class DatabaseConfig {
 
-    @Value("${mysql://b7d415d3f3119c:9f77f38a@us-cdbr-east-06.cleardb.net/heroku_85a5a5eb724ca14?reconnect=true}")
+    @Value("${spring.datasource.url}")
     private String dbUrl;
 
     @Bean
