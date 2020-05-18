@@ -5,9 +5,12 @@ import io.flaterlab.testf.persistence.dao.UserRepository;
 import io.flaterlab.testf.persistence.model.User;
 import io.flaterlab.testf.security.jwt.JwtTokenProvider;
 import io.flaterlab.testf.utils.Json;
+import io.flaterlab.testf.utils.Transfer;
+import io.flaterlab.testf.web.dto.request.AccountInfoRequestDto;
 import io.flaterlab.testf.web.dto.request.SignInRequestDto;
 import io.flaterlab.testf.web.dto.request.SignUpRequestDto;
 import io.flaterlab.testf.web.dto.response.ProfileResponseDto;
+import io.flaterlab.testf.web.error.BadRequestException;
 import io.flaterlab.testf.web.error.UserAlreadyExistException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.http.ResponseEntity;
@@ -91,9 +94,20 @@ public class UserService implements IUserService {
     }
 
     @Override
-    public ResponseEntity getProfileInfo(User user) {
+    public ResponseEntity getAccountInfo(User user) {
         ProfileResponseDto responseDto = new ProfileResponseDto();
         BeanUtils.copyProperties(user, responseDto);
         return ok(responseDto);
+    }
+
+    @Override
+    public ResponseEntity updateAccountInfo(User user, AccountInfoRequestDto body) {
+        User savedUser = userRepository.findById(user.getId()).orElseThrow(() ->
+            new BadRequestException("User not exists"));
+        Transfer.notNullProperties(body, savedUser);
+
+        userRepository.save(savedUser);
+
+        return ok(Json.messageSuccess());
     }
 }

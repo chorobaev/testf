@@ -1,6 +1,7 @@
 package io.flaterlab.testf.service;
 
 import io.flaterlab.testf.persistence.model.User;
+import io.flaterlab.testf.web.dto.request.AccountInfoRequestDto;
 import io.flaterlab.testf.web.dto.request.SignInRequestDto;
 import io.flaterlab.testf.web.dto.request.SignUpRequestDto;
 import org.springframework.http.ResponseEntity;
@@ -11,5 +12,7 @@ public interface IUserService {
 
     ResponseEntity signUp(final SignUpRequestDto signUpRequestDto);
 
-    ResponseEntity getProfileInfo(User user);
+    ResponseEntity getAccountInfo(User user);
+
+    ResponseEntity updateAccountInfo(User user, AccountInfoRequestDto body);
 }

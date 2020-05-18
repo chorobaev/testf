@@ -86,11 +86,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 // Test deleting
                 .antMatchers(HttpMethod.DELETE, "/v1/tests/{testId}")
-                    .access("@userSecurity.hasAccessToTest(authentication, #testId)")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToTest(authentication, #testId)")
                 .antMatchers(HttpMethod.DELETE, "/v1/tests/questions/{questionId}")
-                    .access("@userSecurity.hasAccessToQuestion(authentication, #questionId)")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToQuestion(authentication, #questionId)")
                 .antMatchers(HttpMethod.DELETE, "/v1/tests/questions/answers/{answerId}")
-                    .access("@userSecurity.hasAccessToAnswer(authentication, #answerId)")
+                    .access("hasAuthority('CREATE_PRIVILEGE') and @userSecurity.hasAccessToAnswer(authentication, #answerId)")
 
                 // All others
                 .anyRequest().authenticated();
