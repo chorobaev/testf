@@ -40,7 +40,7 @@ public class User {
     private String passwordHash;
 
     @Column(nullable = false)
-    private boolean enabled = true;
+    private boolean enabled;
 
     @Column(nullable = false)
     @Temporal(TemporalType.DATE)

@@ -1,1 +1,1 @@
-web: java $JAVA_OPTS -jar target/*.war
+web: java $JAVA_OPTS -jar build/libs/testf-v0.0.1.war
