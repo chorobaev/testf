@@ -81,8 +81,8 @@
           <element id="library" level="project" name="Gradle: org.springframework:spring-expression:5.2.5.RELEASE" />
           <element id="library" level="project" name="Gradle: org.springframework:spring-core:5.2.5.RELEASE" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.10.3" />
-          <element id="library" level="project" name="Gradle: org.yaml:snakeyaml:1.25" />
           <element id="library" level="project" name="Gradle: com.fasterxml.jackson.core:jackson-core:2.10.3" />
+          <element id="library" level="project" name="Gradle: org.yaml:snakeyaml:1.25" />
           <element id="library" level="project" name="Gradle: org.glassfish.jaxb:txw2:2.3.2" />
           <element id="library" level="project" name="Gradle: com.sun.xml.fastinfoset:FastInfoset:1.2.16" />
           <element id="library" level="project" name="Gradle: org.springframework:spring-jcl:5.2.5.RELEASE" />
@@ -92,6 +92,12 @@
           <element id="library" level="project" name="Gradle: net.minidev:json-smart:2.3" />
           <element id="library" level="project" name="Gradle: net.minidev:accessors-smart:1.2" />
           <element id="library" level="project" name="Gradle: org.ow2.asm:asm:5.0.4" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.springframework.boot/spring-boot-starter-thymeleaf/2.2.6.RELEASE/4ea7956f653e37d12ee6d4bb14f14d6275223388/spring-boot-starter-thymeleaf-2.2.6.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.thymeleaf/thymeleaf-spring5/3.0.11.RELEASE/de7bf0adf13b5e9c4811f95edf18279da193c0c6/thymeleaf-spring5-3.0.11.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.thymeleaf.extras/thymeleaf-extras-java8time/3.0.4.RELEASE/36e7175ddce36c486fff4578b5af7bb32f54f5df/thymeleaf-extras-java8time-3.0.4.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.thymeleaf/thymeleaf/3.0.11.RELEASE/628ebb91f520053d4120b7b18bf78ff295d57461/thymeleaf-3.0.11.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.attoparser/attoparser/2.0.5.RELEASE/a93ad36df9560de3a5312c1d14f69d938099fa64/attoparser-2.0.5.RELEASE.jar" />
+          <element id="file-copy" path="$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.unbescape/unbescape/1.1.6.RELEASE/7b90360afb2b860e09e8347112800d12c12b2a13/unbescape-1.1.6.RELEASE.jar" />
         </element>
       </element>
     </root>
