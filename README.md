@@ -11,8 +11,6 @@ deleting tests, attempting available tests.
 * [The project report and API documentation][1]
 * [Base url of APIs][2]
 
-**P.S:** An android application using this REST APIs is being developed. 
-It will be available soon on Play Store.
 
 [1]: https://github.com/chorobaev/testf/wiki
 [2]: https://testf-kg.herokuapp.com
